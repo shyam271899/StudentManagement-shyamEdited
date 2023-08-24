@@ -26,21 +26,19 @@ public class PasswordResetController {
         if (optionalRequest.isPresent()) {
             Registration existingRequest = optionalRequest.get();
 
-            if (!existingRequest.getPassword().equals(request.getOldPassword())) {
+            if (!existingRequest.getUserPassword().equals(request.getOldPassword())) {
                 return ResponseEntity.badRequest().body("Invalid old password");
-            }
-            else if (request.getNewPassword().equals(request.getOldPassword())) {
+            } else if (request.getNewPassword().equals(request.getOldPassword())) {
                 return ResponseEntity.badRequest().body("Same old and new password");
-            }else {
-                existingRequest.setPassword(request.getNewPassword());
+            } else {
+                existingRequest.setUserPassword(request.getNewPassword());
                 registrationRepository.save(existingRequest);
 
                 return ResponseEntity.ok("Password reset successful");
             }
 
-        }
-        else {
-            return ResponseEntity.ok("User Not Found");
+        } else {
+            return ResponseEntity.ok("Registration Not Found");
         }
     }
 }

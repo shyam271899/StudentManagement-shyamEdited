@@ -2,35 +2,25 @@ package com.awt.signin.signin.controller;
 
 
 import com.awt.signin.signin.entity.Registration;
-import com.awt.signin.signin.repository.RegistrationRepository;
+import com.awt.signin.signin.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/reg")
 public class RegistrationController {
 
     @Autowired
-    RegistrationRepository registrationRepository;
+    private RegistrationService registrationService;
 
-    @PostMapping("/Users")
-    public ResponseEntity<?> saveRegistration(@RequestBody Registration usersData) {
-
-        Registration byEmail = registrationRepository.findByEmail(usersData.getEmail());
-
-        if (byEmail == null) {
-            registrationRepository.save(usersData);
-            return ResponseEntity.ok("Data Saved Successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
-        }
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody Registration registration) {
+        return registrationService.saveUser(registration);
     }
 
+    @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken) {
+        return registrationService.confirmEmail(confirmationToken);
+    }
 
 }
