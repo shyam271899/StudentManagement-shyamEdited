@@ -21,7 +21,7 @@ public class QuizController {
         this.quizServiceImplementation = quizServiceImplementation;
     }
 
-    @PostMapping
+    @PostMapping("/quiz")
     public Quiz createQuiz(@RequestBody Quiz quiz) {
         return quizServiceImplementation.createQuiz(quiz);
     }
