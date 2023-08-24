@@ -5,8 +5,6 @@ import com.awt.signin.signin.entity.ConfirmationToken;
 import com.awt.signin.signin.entity.Registration;
 import com.awt.signin.signin.repository.ConfirmationTokenRepository;
 import com.awt.signin.signin.repository.RegistrationRepository;
-import com.awt.signin.signin.service.EmailService;
-import com.awt.signin.signin.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -24,7 +22,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
     ConfirmationTokenRepository confirmationTokenRepository;
 
     @Autowired
-    EmailService emailService;
+    EmailServiceImplementation emailServiceImplementation;
 
     @Override
     public ResponseEntity<?> saveUser(Registration registration) {
@@ -45,7 +43,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setText("To confirm your account, please click here : "
                 + "http://localhost:8080/confirm-account?token=" + confirmationToken.getConfirmationToken());
-        emailService.sendEmail(mailMessage);
+        emailServiceImplementation.sendEmail(mailMessage);
 
         System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
 
