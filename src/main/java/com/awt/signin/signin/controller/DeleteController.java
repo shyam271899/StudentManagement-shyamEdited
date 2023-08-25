@@ -1,7 +1,6 @@
 package com.awt.signin.signin.controller;
 
-import com.awt.signin.signin.entity.Registration;
-import com.awt.signin.signin.repository.RegistrationRepository;
+import com.awt.signin.signin.service.DeleteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,24 +8,23 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @RestController
 public class DeleteController {
 
+    private final DeleteService deleteService;
+
     @Autowired
-    RegistrationRepository registrationRepository;
+    public DeleteController(DeleteService deleteService) {
+        this.deleteService = deleteService;
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProfile(@PathVariable Long id) {
-        Optional<Registration> repositoryById = registrationRepository.findById(id);
-
-        if (repositoryById.isPresent()) {
-            registrationRepository.deleteById(id);
-            return ResponseEntity.ok("Profile with ID " + id + " is deleted successfully");
+        String result = deleteService.deleteProfile(id);
+        if (result.contains("not found")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile with ID " + id + " not found");
+            return ResponseEntity.ok(result);
         }
     }
-
 }
